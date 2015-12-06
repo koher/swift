@@ -122,6 +122,10 @@ ParserResult<TypeRepr> Parser::parseTypeSimple(Diag<> MessageID,
         ty = parseTypeImplicitlyUnwrappedOptional(ty.get());
         continue;
       }
+      if (isEitherToken(Tok)) {
+        ty = parseTypeEither(ty.get());
+        continue;
+      }
     }
     break;
   }
@@ -727,6 +731,12 @@ bool Parser::isImplicitlyUnwrappedOptionalToken(const Token &T) const {
   return false;
 }
 
+bool Parser::isEitherToken(const Token &T) const {
+  if (T.is(tok::oper_binary_unspaced) && T.getText().startswith("|"))
+    return true;
+  return false;
+}
+
 SourceLoc Parser::consumeOptionalToken() {
   assert(isOptionalToken(Tok) && "not a '?' token?!");
   return consumeStartingCharacterOfCurrentToken();
@@ -735,6 +745,11 @@ SourceLoc Parser::consumeOptionalToken() {
 SourceLoc Parser::consumeImplicitlyUnwrappedOptionalToken() {
   assert(isImplicitlyUnwrappedOptionalToken(Tok) && "not a '!' token?!");
   // If the text of the token is just '!', grab the next token.
+  return consumeStartingCharacterOfCurrentToken();
+}
+
+SourceLoc Parser::consumeEitherToken() {
+  assert(isEitherToken(Tok) && "not a '|' token?!");
   return consumeStartingCharacterOfCurrentToken();
 }
 
@@ -753,6 +768,17 @@ Parser::parseTypeImplicitlyUnwrappedOptional(TypeRepr *base) {
   return makeParserResult(
            new (Context) ImplicitlyUnwrappedOptionalTypeRepr(
                            base, exclamationLoc));
+}
+
+ParserResult<GenericIdentTypeRepr> Parser::parseTypeEither(TypeRepr *base) {
+  SourceLoc verticalLoc = consumeEitherToken();
+  SmallVector<TypeRepr*, 2> GenericArgs;
+  GenericArgs.push_back(base);
+  GenericArgs.push_back(parseType().get());
+  return makeParserResult(new (Context) GenericIdentTypeRepr(verticalLoc,
+                                          Context.getIdentifier("Either"),
+                                          Context.AllocateCopy(GenericArgs),
+                                          SourceRange(verticalLoc, verticalLoc)));
 }
 
 //===--------------------------------------------------------------------===//

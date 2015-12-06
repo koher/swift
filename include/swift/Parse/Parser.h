@@ -871,11 +871,16 @@ public:
   ParserResult<ImplicitlyUnwrappedOptionalTypeRepr>
     parseTypeImplicitlyUnwrappedOptional(TypeRepr *Base);
 
+  ParserResult<GenericIdentTypeRepr> parseTypeEither(TypeRepr *Base);
+
   bool isOptionalToken(const Token &T) const;
   SourceLoc consumeOptionalToken();
   
   bool isImplicitlyUnwrappedOptionalToken(const Token &T) const;
   SourceLoc consumeImplicitlyUnwrappedOptionalToken();
+
+  bool isEitherToken(const Token &T) const;
+  SourceLoc consumeEitherToken();
 
   TypeRepr *applyAttributeToType(TypeRepr *Ty, const TypeAttributes &Attr);
 
