@@ -40,6 +40,7 @@ set(SWIFTLIB_ESSENTIAL
   CollectionAlgorithms.swift.gyb
   CompilerProtocols.swift
   ContiguousArrayBuffer.swift
+  Either.swift
   EmptyCollection.swift
   ErrorType.swift
   Existential.swift
