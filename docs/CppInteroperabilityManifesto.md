@@ -405,13 +405,13 @@ void printInt(const int &value);
 ```swift
 // C++ header imported in Swift.
 
-void printInt(_ value: UnsafePointer<Int>)
+func printInt(_ value: UnsafePointer<Int>)
 ```
 
 ```swift
 // Usage example.
 
-void caller() {
+func caller() {
   var x = 42
   printInt(&x) // OK
 
@@ -430,7 +430,7 @@ immutable values, producing an `UnsafePointer<T>`.
 ```swift
 // Usage example.
 
-void caller() {
+func caller() {
   let x = 42
   printInt(&x) // OK
 }
@@ -448,13 +448,13 @@ void printInt(const int &value);
 ```swift
 // C++ header imported in Swift.
 
-void printInt(_ value: Int)
+func printInt(_ value: Int)
 ```
 
 ```swift
 // Usage example.
 
-void caller() {
+func caller() {
   let x = 42
   printInt(y) // OK
 }
